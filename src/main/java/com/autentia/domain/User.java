@@ -12,11 +12,11 @@ import java.util.Objects;
 
 import static javax.persistence.GenerationType.AUTO;
 
-@Entity(name = "user")
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Entity(name = "user")
 public class User {
 
     @Id
