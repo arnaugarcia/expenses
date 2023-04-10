@@ -8,4 +8,5 @@ public interface ExpenseRepository {
 
     List<Expense> findExpensesByGroupSortedByDateDesc(Long groupId);
 
+    Expense save(Expense expense);
 }

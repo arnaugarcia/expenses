@@ -1,5 +1,6 @@
 package com.autentia.service.group.impl;
 
+import com.autentia.domain.Expense;
 import com.autentia.domain.Group;
 import com.autentia.domain.User;
 import com.autentia.repository.GroupRepository;
@@ -44,6 +45,13 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO addUser(Long groupId, User user) {
         Group group = findGroupById(groupId);
         group.addUser(user);
+        return groupMapper.toDTO(groupRepository.save(group));
+    }
+
+    @Override
+    public GroupDTO addExpense(Long groupId, Expense expense) {
+        Group group = findGroupById(groupId);
+        group.addExpense(expense);
         return groupMapper.toDTO(groupRepository.save(group));
     }
 }

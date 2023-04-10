@@ -2,11 +2,11 @@ package com.autentia.web.rest;
 
 import com.autentia.service.expense.ExpenseService;
 import com.autentia.service.expense.dto.ExpenseDTO;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
+import com.autentia.service.expense.request.ExpenseRequest;
+import io.micronaut.http.annotation.*;
 import org.slf4j.Logger;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -26,6 +26,12 @@ public class ExpenseController {
     public List<ExpenseDTO> findAllExpensesByGroup(@PathVariable(name = "id") Long groupId) {
         log.info("REST request to get all Expenses by Group");
         return expenseService.findExpensesByGroup(groupId);
+    }
+
+    @Post("/groups/{id}/expenses")
+    public ExpenseDTO createExpense(@PathVariable(name = "id") Long groupId, @Valid @Body ExpenseRequest expenseRequest) {
+        log.info("REST request to create Expense");
+        return expenseService.createExpense(groupId, expenseRequest);
     }
 
 }

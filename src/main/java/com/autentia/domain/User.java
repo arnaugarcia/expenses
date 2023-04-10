@@ -37,7 +37,7 @@ public class User implements Serializable {
     @Column(name = "surnames")
     private String surnames;
 
-    @Column(name = "login")
+    @Column(name = "login", unique = true)
     private String login;
 
     @OneToMany(mappedBy = "user")

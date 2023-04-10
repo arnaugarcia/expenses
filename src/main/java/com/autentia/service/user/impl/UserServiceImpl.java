@@ -3,8 +3,7 @@ package com.autentia.service.user.impl;
 import com.autentia.domain.User;
 import com.autentia.repository.UserRepository;
 import com.autentia.service.user.UserService;
-import com.autentia.service.user.dto.UserDTO;
-import com.autentia.service.user.mapper.UserMapper;
+import com.autentia.service.user.exception.UserNotFoundException;
 import com.autentia.service.user.request.UserRequest;
 import jakarta.inject.Singleton;
 
@@ -15,11 +14,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final UserMapper userMapper;
-
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -32,7 +28,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    private UserDTO saveAndMapToDTO(User user) {
-        return userMapper.toDTO(userRepository.save(user));
+    @Override
+    public User findByLogin(String login) {
+        return userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
     }
+
 }

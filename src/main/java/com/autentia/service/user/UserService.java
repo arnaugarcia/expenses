@@ -7,4 +7,5 @@ public interface UserService {
 
     User createUser(UserRequest userRequest);
 
+    User findByLogin(String login);
 }
