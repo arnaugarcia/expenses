@@ -1,5 +1,6 @@
 package com.autentia.service.friend.impl;
 
+import com.autentia.domain.User;
 import com.autentia.service.friend.FriendService;
 import com.autentia.service.group.GroupService;
 import com.autentia.service.group.dto.GroupDTO;
@@ -7,6 +8,8 @@ import com.autentia.service.user.UserService;
 import com.autentia.service.user.dto.UserDTO;
 import com.autentia.service.user.request.UserRequest;
 import jakarta.inject.Singleton;
+
+import javax.transaction.Transactional;
 
 @Singleton
 public class FriendServiceImpl implements FriendService {
@@ -21,10 +24,11 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
+    @Transactional
     public GroupDTO addFriendToGroup(Long groupId, UserRequest userRequest) {
         GroupDTO group = groupService.findById(groupId);
-        UserDTO user = userService.createUser(userRequest);
-        groupService.addUser(group.id(), user.id());
+        User user = userService.createUser(userRequest);
+        groupService.addUser(group.id(), user);
         return group;
     }
 }

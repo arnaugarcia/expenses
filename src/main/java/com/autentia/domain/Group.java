@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 @Getter
 @Setter
@@ -40,7 +42,7 @@ public class Group implements Serializable {
     @ToString.Exclude
     private Set<Expense> expenses = new HashSet<>();
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(mappedBy = "groups", cascade = {MERGE, PERSIST})
     @ToString.Exclude
     private Set<User> users = new HashSet<>();
 

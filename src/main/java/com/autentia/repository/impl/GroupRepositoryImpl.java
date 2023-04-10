@@ -6,8 +6,11 @@ import io.micronaut.transaction.annotation.ReadOnly;
 import jakarta.inject.Singleton;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Optional.ofNullable;
 
 @Singleton
 public class GroupRepositoryImpl implements GroupRepository {
@@ -25,11 +28,13 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
+    @ReadOnly
     public Optional<Group> findById(Long id) {
-        return Optional.ofNullable(entityManager.find(Group.class, id));
+        return ofNullable(entityManager.find(Group.class, id));
     }
 
     @Override
+    @Transactional
     public Group save(Group group) {
         entityManager.persist(group);
         return group;

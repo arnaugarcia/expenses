@@ -8,6 +8,8 @@ import com.autentia.service.user.mapper.UserMapper;
 import com.autentia.service.user.request.UserRequest;
 import jakarta.inject.Singleton;
 
+import javax.transaction.Transactional;
+
 @Singleton
 public class UserServiceImpl implements UserService {
 
@@ -21,12 +23,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createUser(UserRequest userRequest) {
+    @Transactional
+    public User createUser(UserRequest userRequest) {
         User user = new User()
             .name(userRequest.name())
             .surnames(userRequest.surnames())
             .login(userRequest.login());
-        return saveAndMapToDTO(user);
+        return userRepository.save(user);
     }
 
     private UserDTO saveAndMapToDTO(User user) {
