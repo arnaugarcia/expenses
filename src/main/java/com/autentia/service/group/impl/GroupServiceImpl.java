@@ -4,13 +4,13 @@ import com.autentia.domain.Group;
 import com.autentia.repository.GroupRepository;
 import com.autentia.service.group.GroupService;
 import com.autentia.service.group.dto.GroupDTO;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import io.micronaut.transaction.annotation.ReadOnly;
+import jakarta.inject.Singleton;
 
 import java.util.List;
 import java.util.function.Function;
 
-@Service
+@Singleton
 public class GroupServiceImpl implements GroupService {
 
     private final GroupRepository groupRepository;
@@ -20,7 +20,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @ReadOnly
     public List<GroupDTO> findAll() {
         return groupRepository.findAll().stream()
             .map(toGroupDTO())
