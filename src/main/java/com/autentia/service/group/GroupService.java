@@ -8,4 +8,8 @@ public interface GroupService {
 
     List<GroupDTO> findAll();
 
+    GroupDTO findById(Long id);
+
+    GroupDTO addUser(Long groupId, Long userId);
+
 }
