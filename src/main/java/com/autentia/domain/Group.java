@@ -41,6 +41,10 @@ public class Group implements Serializable {
     @ToString.Exclude
     private Set<User> users = new HashSet<>();
 
+    public Long id() {
+        return id;
+    }
+
     public Group id(Long id) {
         this.setId(id);
         return this;
