@@ -17,8 +17,8 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     }
 
     @Override
-    public List<Expense> findExpensesByGroup(Long groupId) {
-        return entityManager.createQuery("select e from Expense e where e.group.id = :groupId", Expense.class)
+    public List<Expense> findExpensesByGroupSortedByDateDesc(Long groupId) {
+        return entityManager.createQuery("select e from Expense e where e.group.id = :groupId order by e.date desc", Expense.class)
             .setParameter("groupId", groupId)
             .getResultList();
     }

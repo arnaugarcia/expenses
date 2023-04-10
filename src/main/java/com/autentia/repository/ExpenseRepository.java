@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ExpenseRepository {
 
-    List<Expense> findExpensesByGroup(Long groupId);
+    List<Expense> findExpensesByGroupSortedByDateDesc(Long groupId);
 
 }
