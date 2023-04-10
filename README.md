@@ -56,12 +56,6 @@
 
 - [https://swagger.io/tools/swagger-ui/](https://swagger.io/tools/swagger-ui/)
 
-
-## Feature spring documentation
-
-- [Micronaut Spring Framework Annotations documentation](https://micronaut-projects.github.io/micronaut-spring/latest/guide/index.html)
-
-
 ## Feature tomcat-server documentation
 
 - [Micronaut Tomcat Server documentation](https://micronaut-projects.github.io/micronaut-servlet/1.0.x/guide/index.html#tomcat)
