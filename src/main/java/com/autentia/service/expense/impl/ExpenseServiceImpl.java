@@ -28,6 +28,6 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     private static Function<Expense, ExpenseDTO> toExpenseDTO() {
-        return expense -> new ExpenseDTO(expense.getName(), expense.getDescription(), expense.getAmount(), null);
+        return expense -> new ExpenseDTO(expense.getName(), expense.getDescription(), expense.getAmount(), expense.getDate().toLocalDateTime().toString());
     }
 }

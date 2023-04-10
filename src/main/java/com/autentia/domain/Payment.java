@@ -4,9 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -25,15 +26,17 @@ public class Payment implements Serializable {
     private Long id;
 
     @Column(name = "amount")
+    @NotBlank
     private Float amount;
 
     @Column(name = "date")
-    private ZonedDateTime date;
+    @NotBlank
+    private LocalDateTime date;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Expense expense;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User user;
 
     public Payment id(Long id) {
@@ -46,7 +49,7 @@ public class Payment implements Serializable {
         return this;
     }
 
-    public Payment date(ZonedDateTime date) {
+    public Payment date(LocalDateTime date) {
         this.setDate(date);
         return this;
     }
