@@ -9,4 +9,6 @@ public interface ExpenseRepository {
     List<Expense> findExpensesByGroupSortedByDateDesc(Long groupId);
 
     Expense save(Expense expense);
+
+    List<Expense> findExpensesByGroup(Long groupId);
 }

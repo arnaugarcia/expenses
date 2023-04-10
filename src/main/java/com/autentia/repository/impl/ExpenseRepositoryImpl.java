@@ -32,4 +32,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         entityManager.persist(expense);
         return expense;
     }
+
+    @Override
+    @ReadOnly
+    public List<Expense> findExpensesByGroup(Long groupId) {
+        return entityManager.createQuery("select e from Expense e where e.group.id = :groupId", Expense.class)
+            .setParameter("groupId", groupId)
+            .getResultList();
+    }
 }
