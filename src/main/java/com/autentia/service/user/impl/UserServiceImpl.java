@@ -8,6 +8,7 @@ import com.autentia.service.user.request.UserRequest;
 import jakarta.inject.Singleton;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Singleton
 public class UserServiceImpl implements UserService {
@@ -31,6 +32,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByLogin(String login) {
         return userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException(login));
+    }
+
+    @Override
+    public List<User>
+    findByGroupId(Long groupId) {
+        return userRepository.findByGroupId(groupId).stream().toList();
     }
 
 }

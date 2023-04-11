@@ -15,5 +15,4 @@ public interface GroupService {
     GroupDTO addUser(Long groupId, User user);
 
     GroupDTO addExpense(Long groupId, Expense expense);
-
 }
