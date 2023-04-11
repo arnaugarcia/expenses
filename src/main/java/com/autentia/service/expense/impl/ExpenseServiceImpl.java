@@ -11,13 +11,15 @@ import com.autentia.service.expense.request.ExpenseRequest;
 import com.autentia.service.group.GroupService;
 import com.autentia.service.group.dto.GroupDTO;
 import com.autentia.service.user.UserService;
+import com.autentia.service.user.mapper.UserMapper;
 import io.micronaut.transaction.annotation.ReadOnly;
 import jakarta.inject.Singleton;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static java.util.Comparator.comparing;
 
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
@@ -26,16 +28,20 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseMapper expenseMapper;
 
+    private final UserMapper userMapper;
+
     private final GroupService groupService;
 
     private final UserService userService;
 
     public ExpenseServiceImpl(ExpenseRepository expenseRepository,
                               ExpenseMapper expenseMapper,
+                              UserMapper userMapper,
                               GroupService groupService,
                               UserService userService) {
         this.expenseRepository = expenseRepository;
         this.expenseMapper = expenseMapper;
+        this.userMapper = userMapper;
         this.groupService = groupService;
         this.userService = userService;
     }
@@ -66,27 +72,54 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public ExpenseSummaryDTO getExpenseSummaryByGroup(Long groupId) {
         GroupDTO group = groupService.findById(groupId);
-        List<Expense> groupExpenses = expenseRepository.findExpensesByGroup(groupId).stream()
-                .sorted(Comparator.comparing(Expense::getAmount).reversed())
-            .toList();
-        double totalAmount = groupExpenses.stream()
-            .mapToDouble(Expense::getAmount)
-            .sum();
+        List<Expense> groupExpenses = findGroupExpensesSortedByAmount(groupId);
+
+        double totalAmount = totalAmountOf(groupExpenses);
+
         List<User> users = userService.findByGroupId(groupId);
+
+        final User userThatPaidTheMost = users.stream()
+            .findFirst()
+            .orElseThrow();
+
         final double amountPerUser = totalAmount / users.size();
+
         List<ExpenseSummaryDTO.ExpenseUser> expenseUsers = users.stream()
-            .filter(isTheUserThatPaidTheMostOf(groupExpenses))
-            .map(user -> {
-                double userAmount = groupExpenses.stream()
-                    .filter(expense -> expense.getUser().equals(user))
-                    .mapToDouble(Expense::getAmount)
-                    .sum();
-                return new ExpenseSummaryDTO.ExpenseUser(user.getName(), user.getSurnames(), user.getLogin(), (float) (amountPerUser - userAmount));
-            }).toList();
+            .filter(byUserLogin(userThatPaidTheMost.getLogin())) // Removes the user that have paid the most
+            .map(user -> sumAllUserExpensesAndSubtractTheAmount(groupExpenses, amountPerUser, user, userThatPaidTheMost))
+            .toList();
         return new ExpenseSummaryDTO(group.name(), group.description(), expenseUsers);
     }
 
-    private static Predicate<User> isTheUserThatPaidTheMostOf(List<Expense> groupExpenses) {
-        return user -> groupExpenses.stream().noneMatch(expense -> expense.getUser().equals(user));
+    private ExpenseSummaryDTO.ExpenseUser sumAllUserExpensesAndSubtractTheAmount(List<Expense> groupExpenses,
+                                                                                        double amountPerUser,
+                                                                                        User user,
+                                                                                        User userThatPaidTheMost) {
+        double userAmount = groupExpenses.stream()
+            .filter(byLogin(user.getLogin()))
+            .mapToDouble(Expense::getAmount)
+            .sum();
+        return new ExpenseSummaryDTO.ExpenseUser(userMapper.toDTO(user), (float) (amountPerUser - userAmount), userMapper.toDTO(userThatPaidTheMost));
+    }
+
+    private static Predicate<Expense> byLogin(String login) {
+        return expense -> expense.getUser().getLogin().equals(login);
+    }
+
+    private static Predicate<User> byUserLogin(String login) {
+        return user -> !user.getLogin().equals(login);
+    }
+
+    private List<Expense> findGroupExpensesSortedByAmount(Long groupId) {
+        return expenseRepository.findExpensesByGroup(groupId)
+            .stream()
+            .sorted(comparing(Expense::getAmount).reversed())
+            .toList();
+    }
+
+    private static double totalAmountOf(List<Expense> groupExpenses) {
+        return groupExpenses.stream()
+            .mapToDouble(Expense::getAmount)
+            .sum();
     }
 }

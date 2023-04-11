@@ -1,5 +1,6 @@
 package com.autentia.service.expense.dto;
 
+import com.autentia.service.user.dto.UserDTO;
 import io.micronaut.serde.annotation.Serdeable;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public record ExpenseSummaryDTO(String name, String description, List<ExpenseUser> userExpenses) {
 
     @Serdeable
-    public record ExpenseUser(String name, String surname, String login, Float amount) {
+    public record ExpenseUser(UserDTO payer, Float amount, UserDTO payee) {
     }
 
 }
