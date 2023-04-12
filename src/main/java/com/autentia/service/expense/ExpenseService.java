@@ -12,5 +12,5 @@ public interface ExpenseService {
 
     ExpenseDTO createExpense(Long groupId, ExpenseRequest expenseRequest);
 
-    ExpenseSummaryDTO getExpenseSummaryByGroup(Long groupId);
+    List<ExpenseSummaryDTO> getExpenseSummaryByGroup(Long groupId);
 }

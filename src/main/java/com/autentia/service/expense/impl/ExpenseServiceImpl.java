@@ -9,7 +9,6 @@ import com.autentia.service.expense.dto.ExpenseSummaryDTO;
 import com.autentia.service.expense.mapper.ExpenseMapper;
 import com.autentia.service.expense.request.ExpenseRequest;
 import com.autentia.service.group.GroupService;
-import com.autentia.service.group.dto.GroupDTO;
 import com.autentia.service.user.UserService;
 import com.autentia.service.user.mapper.UserMapper;
 import io.micronaut.transaction.annotation.ReadOnly;
@@ -70,8 +69,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public ExpenseSummaryDTO getExpenseSummaryByGroup(Long groupId) {
-        GroupDTO group = groupService.findById(groupId);
+    public List<ExpenseSummaryDTO> getExpenseSummaryByGroup(Long groupId) {
         List<Expense> groupExpenses = findGroupExpensesSortedByAmount(groupId);
 
         double totalAmount = totalAmountOf(groupExpenses);
@@ -84,14 +82,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         final double amountPerUser = totalAmount / users.size();
 
-        List<ExpenseSummaryDTO.ExpenseUser> expenseUsers = users.stream()
+        return users.stream()
             .filter(byUserLogin(userThatPaidTheMost.getLogin())) // Removes the user that have paid the most
             .map(user -> sumAllUserExpensesAndSubtractTheAmount(groupExpenses, amountPerUser, user, userThatPaidTheMost))
             .toList();
-        return new ExpenseSummaryDTO(group.name(), group.description(), expenseUsers);
     }
 
-    private ExpenseSummaryDTO.ExpenseUser sumAllUserExpensesAndSubtractTheAmount(List<Expense> groupExpenses,
+    private ExpenseSummaryDTO sumAllUserExpensesAndSubtractTheAmount(List<Expense> groupExpenses,
                                                                                         double amountPerUser,
                                                                                         User user,
                                                                                         User userThatPaidTheMost) {
@@ -99,7 +96,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             .filter(byLogin(user.getLogin()))
             .mapToDouble(Expense::getAmount)
             .sum();
-        return new ExpenseSummaryDTO.ExpenseUser(userMapper.toDTO(user), (float) (amountPerUser - userAmount), userMapper.toDTO(userThatPaidTheMost));
+        return new ExpenseSummaryDTO(userMapper.toDTO(user), (float) (amountPerUser - userAmount), userMapper.toDTO(userThatPaidTheMost));
     }
 
     private static Predicate<Expense> byLogin(String login) {

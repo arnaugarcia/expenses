@@ -36,7 +36,7 @@ public class ExpenseController {
     }
 
     @Get("/groups/{id}/summary")
-    public ExpenseSummaryDTO getExpenseSummary(@PathVariable(name = "id") Long groupId) {
+    public List<ExpenseSummaryDTO> getExpenseSummary(@PathVariable(name = "id") Long groupId) {
         log.info("REST request to get Expense Summary");
         return expenseService.getExpenseSummaryByGroup(groupId);
     }
