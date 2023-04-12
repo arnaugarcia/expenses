@@ -15,6 +15,9 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
   application:
     name: expenses
+  server:
+    cors:
+      enabled: true
 jpa:
   default:
     properties:
