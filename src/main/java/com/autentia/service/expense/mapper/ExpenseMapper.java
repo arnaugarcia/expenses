@@ -6,13 +6,16 @@ import com.autentia.service.expense.dto.ExpenseDTO;
 import com.autentia.service.expense.request.ExpenseRequest;
 import jakarta.inject.Singleton;
 
+import java.time.format.DateTimeFormatter;
+
 import static java.time.ZonedDateTime.now;
 
 @Singleton
 public class ExpenseMapper {
 
     public ExpenseDTO toDto(Expense expense) {
-        String cratedDate = expense.getDate().toLocalDateTime().toString();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String cratedDate = expense.getDate().format(formatter);
 
         User user = expense.getUser();
         ExpenseDTO.ExpenseUser expenseUser = new ExpenseDTO.ExpenseUser(user.getName(), user.getSurnames(), user.getLogin());
