@@ -16,9 +16,11 @@ import jakarta.inject.Singleton;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparing;
+import static java.util.List.of;
 
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
@@ -76,15 +78,18 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         List<User> users = userService.findByGroupId(groupId);
 
-        final User userThatPaidTheMost = users.stream()
-            .findFirst()
-            .orElseThrow();
+        final Optional<User> userThatPaidTheMost = users.stream()
+            .findFirst();
+
+        if  (userThatPaidTheMost.isEmpty()) {
+            return of();
+        }
 
         final double amountPerUser = totalAmount / users.size();
 
         return users.stream()
-            .filter(byUserLogin(userThatPaidTheMost.getLogin())) // Removes the user that have paid the most
-            .map(user -> sumAllUserExpensesAndSubtractTheAmount(groupExpenses, amountPerUser, user, userThatPaidTheMost))
+            .filter(byUserLogin(userThatPaidTheMost.get().getLogin())) // Removes the user that have paid the most
+            .map(user -> sumAllUserExpensesAndSubtractTheAmount(groupExpenses, amountPerUser, user, userThatPaidTheMost.get()))
             .toList();
     }
 
