@@ -21,6 +21,11 @@ public class GroupController {
         this.groupService = groupService;
     }
 
+    /**
+     * {@code GET  /groups} : get all the groups.
+     *
+     * @return the {@link List} of Groups.
+     */
     @Get("/groups")
     public List<GroupDTO> findAllGroups() {
         log.info("REST request to get all Groups");

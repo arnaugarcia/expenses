@@ -26,12 +26,23 @@ public class FriendsController {
         this.friendService = friendService;
     }
 
+    /**
+     * {@code POST  /groups/{id}/friends} : add friend to group.
+      * @param groupId id of the group
+     * @param userRequest user to add
+     * @return the {@link HttpResponse} with status {@code 200 (OK)} and with body the new group
+     */
     @Post("/groups/{id}/friends")
     public HttpResponse<GroupDTO> addFriendToGroup(@PathVariable("id") Long groupId, @Valid @Body UserRequest userRequest) {
         log.info("REST request to add friend to group: {}", groupId);
         return ok().body(friendService.addFriendToGroup(groupId, userRequest));
     }
 
+    /**
+     * {@code GET  /groups/{id}/friends} : get all the friends by group.
+     * @param groupId id of the group
+     * @return the {@link HttpResponse} with status {@code 200 (OK)} and with body the new group
+     */
     @Get("/groups/{id}/friends")
     public HttpResponse<List<UserDTO>> findFriendsByGroupId(@PathVariable("id") Long groupId) {
         log.info("REST request to find friends by group: {}", groupId);

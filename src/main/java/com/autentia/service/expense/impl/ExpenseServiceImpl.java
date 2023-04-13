@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static java.time.ZonedDateTime.now;
 import static java.util.Comparator.comparing;
 import static java.util.List.of;
 
@@ -59,7 +60,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     public ExpenseDTO createExpense(Long groupId, ExpenseRequest expenseRequest) {
         groupService.findById(groupId); // Check if group exists
-        Expense expense = expenseMapper.toEntity(expenseRequest);
+        Expense expense = new Expense()
+            .name(expenseRequest.name())
+            .description(expenseRequest.description())
+            .amount(expenseRequest.amount())
+            .date(now());
         User user = userService.findByLogin(expenseRequest.creatorLogin());
 
         expense.setUser(user);
