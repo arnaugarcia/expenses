@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
+import static io.micronaut.http.HttpResponse.ok;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Controller("/api")
@@ -28,13 +29,13 @@ public class FriendsController {
     @Post("/groups/{id}/friends")
     public HttpResponse<GroupDTO> addFriendToGroup(@PathVariable("id") Long groupId, @Valid @Body UserRequest userRequest) {
         log.info("REST request to add friend to group: {}", groupId);
-        return HttpResponse.ok().body(friendService.addFriendToGroup(groupId, userRequest));
+        return ok().body(friendService.addFriendToGroup(groupId, userRequest));
     }
 
     @Get("/groups/{id}/friends")
     public HttpResponse<List<UserDTO>> findFriendsByGroupId(@PathVariable("id") Long groupId) {
         log.info("REST request to find friends by group: {}", groupId);
-        return HttpResponse.ok().body(friendService.findFriendsByGroupId(groupId));
+        return ok().body(friendService.findFriendsByGroupId(groupId));
     }
 
 }
